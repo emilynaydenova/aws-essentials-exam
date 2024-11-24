@@ -13,3 +13,11 @@ def test_sqs_queue_created():
 #     template.has_resource_properties("AWS::SQS::Queue", {
 #         "VisibilityTimeout": 300
 #     })
+
+
+
+def test_stack():
+    app = core.App()
+    stack = AwsEssentialsExamStack(app, "aws-essentials-exam")
+    template = app.synth().get_stack_by_name("aws-essentials-exam").template
+    assert "AWS::S3::Bucket" in template["Resources"]

@@ -1,0 +1,100 @@
+name: AWS Deployment
+run-name: ${{github.actor}} performed ${{github.event_name}} on ${{github.head_ref || github.ref_name}}
+
+# the GitHub event that triggers workflow
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+#  first job -> checkout code
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        uses:
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to AWS
+        run: |
+          aws s3 sync ./dist s3://my-bucket-name
+#          ---------------
+
+name: AWS Deployment CI/CD Pipeline
+run-name: ${{github.actor}} performed ${{github.event_name}} on ${{github.head_ref || github.ref_name}}
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.13
+
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: Run Linting and Tests
+        run: |
+          source .venv/bin/activate
+          pylint my_cdk_project
+          pytest tests
+
+      - name: CDK Synth
+        run: |
+          source .venv/bin/activate
+          cdk synth
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Deploy to AWS
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          source .venv/bin/activate
+          cdk deploy --require-approval never

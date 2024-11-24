@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+     <title>File Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        input[type="file"] {
+            margin: 20px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload Your File</h1>
+    <form id="uploadForm">
+        <input type="file" id="fileInput" />
+        <br />
+        <button type="button" onclick="uploadFile()">Upload</button>
+    </form>
+    <p id="message"></p>
+
+    <script>
+        async function uploadFile() {
+            const fileInput = document.getElementById("fileInput");
+            const file = fileInput.files[0];
+
+            if (!file) {
+                document.getElementById("message").innerText = "Please select a file to upload.";
+                return;
+            }
+
+            const bucketName = "uploaded-by-client";
+            const region = "eu-central-1";
+            const uploadUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${file.name}`;
+
+            try {
+                const response = await fetch(uploadUrl, {
+                    method: "POST",
+                    body: file,
+                    headers: {
+                        "Content-Type": file.type,
+                    },
+                });
+
+                if (response.ok) {
+                    document.getElementById("message").innerText = "File uploaded successfully!";
+                } else {
+                    document.getElementById("message").innerText = "Failed to upload file.";
+                }
+            } catch (error) {
+                console.error("Error uploading file:", error);
+                document.getElementById("message").innerText = "Error uploading file.";
+            }
+        }
+    </script>
+</body>
+</html>
