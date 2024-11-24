@@ -49,4 +49,4 @@ def lambda_handler(event, context):
             Subject="File Upload Success",
         )
 
-    return {"status": "processed"}
+    return {"statusCode": 200, "body": "Metadata stored successfully"}
