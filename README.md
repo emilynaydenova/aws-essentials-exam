@@ -1,58 +1,11 @@
+##AWS Essentials October 2024 – Regular Exam
+### Assignment
+A client wants you to provide a service that processes files. You need to provide them with a simple web interface which has only a button, which chooses a file to upload. This web interface must be accessible from a public IPv4 address.  After uploading this file, a process must be started automatically.
+-	The allowed extensions are .pdf, .jpg and .png. In the event of an upload of another file extension (e.g. .txt, .docx, .xlsx), an error notification must be sent to the client. 
+-	 The client wants to have file metadata stored in a NoSQL database. For each file upload, they need an entry in the DB with the file size, file extension and date of upload. 
+-	When the DB entry is successfully entered, the client needs to receive an E-Mail notification with data about the object (file extension, file size and date of upload).
+-	They must be able to retrieve all entries from the DB with a specified file extension within milliseconds. 
+-	The files must be stored for 30 minutes, after which they must be deleted automatically. 
+The client wants the project in a public GitHub repository, including a CI / CD pipeline that ensures the quality of the code after each push to the master branch.
+This repository should include tests for the stack. Add meaningful logs wherever possible to facilitate debugging.
 
-# Welcome to your CDK Python project!
-
-This is a blank project for CDK development with Python.
-
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
-
-This project is set up like a standard Python project.  The initialization
-process also creates a virtualenv within this project, stored under the `.venv`
-directory.  To create the virtualenv it assumes that there is a `python3`
-(or `python` for Windows) executable in your path with access to the `venv`
-package. If for any reason the automatic creation of the virtualenv fails,
-you can create the virtualenv manually.
-
-To manually create a virtualenv on MacOS and Linux:
-
-```
-$ python -m venv .venv
-```
-
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
-
-```
-$ source .venv/bin/activate
-```
-
-If you are a Windows platform, you would activate the virtualenv like this:
-
-```
-% .venv\Scripts\activate.bat
-```
-
-Once the virtualenv is activated, you can install the required dependencies.
-
-```
-$ pip install -r requirements.txt
-```
-
-At this point you can now synthesize the CloudFormation template for this code.
-
-```
-$ cdk synth
-```
-
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
-
-## Useful commands
-
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
-
-Enjoy!
