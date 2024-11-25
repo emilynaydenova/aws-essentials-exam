@@ -1,4 +1,4 @@
-##AWS Essentials October 2024 – Regular Exam
+## AWS Essentials October 2024 – Regular Exam
 ### Assignment
 A client wants you to provide a service that processes files. You need to provide them with a simple web interface which has only a button, which chooses a file to upload. This web interface must be accessible from a public IPv4 address.  After uploading this file, a process must be started automatically.
 -	The allowed extensions are .pdf, .jpg and .png. In the event of an upload of another file extension (e.g. .txt, .docx, .xlsx), an error notification must be sent to the client. 
