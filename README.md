@@ -9,3 +9,8 @@ A client wants you to provide a service that processes files. You need to provid
 The client wants the project in a public GitHub repository, including a CI / CD pipeline that ensures the quality of the code after each push to the master branch.
 This repository should include tests for the stack. Add meaningful logs wherever possible to facilitate debugging.
 
+### Solution
+ /assets/images/ExamDiagram.jpg
+
+
+
