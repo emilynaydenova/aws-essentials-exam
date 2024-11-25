@@ -10,4 +10,4 @@ The client wants the project in a public GitHub repository, including a CI / CD 
 This repository should include tests for the stack. Add meaningful logs wherever possible to facilitate debugging.
 
 ### Solution
- ![Diagram]/assets/images/ExamDiagram.jpg
+ ![Diagram](assets/images/ExamDiagram.jpg)
