@@ -53,7 +53,7 @@
 
             try {
                 const response = await fetch(uploadUrl, {
-                    method: "POST",
+                    method: "PUT",
                     body: file,
                     headers: {
                         "Content-Type": file.type,

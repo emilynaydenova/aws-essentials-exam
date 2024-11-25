@@ -19,7 +19,7 @@ from constructs import Construct
 
 
 class AwsEssentialsExamStack(Stack):
-    client_mail = "emilia_n2@yahoo.com"
+    client_mail = "hristo.zhelev@yahoo.com"
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
