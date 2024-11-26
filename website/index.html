@@ -49,8 +49,8 @@
 
             const bucketName = "uploaded-by-client";
             const region = "eu-central-1";
-            const uploadUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${file.name}`;
-
+            const uploadUrl = `https://${bucketName}.s3-website.${region}.amazonaws.com/${file.name}`;
+console.log(uploadUrl)
             try {
                 const response = await fetch(uploadUrl, {
                     method: "PUT",
