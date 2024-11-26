@@ -75,7 +75,7 @@ class AwsEssentialsExamStack(Stack):
         # Grant permissions for uploads (e.g., via a web app or Lambda)
         upload_files_bucket.add_to_resource_policy(
             iam.PolicyStatement(
-                actions=["s3:PutObject"],
+                actions=["s3:PutObject","s3:DeleteObject"],
                 resources=[upload_files_bucket.arn_for_objects("*")],
                 principals=[iam.AnyPrincipal()],  # Use specific IAM roles or users in production
                 conditions={
@@ -102,38 +102,6 @@ class AwsEssentialsExamStack(Stack):
             description="S3 Bucket ARN for Uploading Files",
         )
 
-
-        # ------------
-
-        # # S3 Bucket for static website hosting
-        # upload_files_bucket = s3.Bucket(
-        #     self,
-        #     "UploadFilesBucket",  # here are stored uploaded by the client files
-        #     bucket_name='uploaded-by-client',
-        #     website_index_document="index.html",
-        #     public_read_access=True,
-        #     block_public_access=s3.BlockPublicAccess.BLOCK_ACLS,
-        #     removal_policy=RemovalPolicy.DESTROY,
-        #     auto_delete_objects=True,
-        # )
-        #
-        # # Deploy HTML files to the S3 bucket
-        # s3_deployment.BucketDeployment(
-        #     self,
-        #      "DeployWebsiteContent",
-        #     sources=[s3_deployment.Source.asset("website")],  # Folder containing HTML files
-        #     destination_bucket=upload_files_bucket,
-        # )
-        #
-        # # Output the website URL
-        # CfnOutput(
-        #     self,
-        #     "WebsiteURL",
-        #     value=upload_files_bucket.bucket_website_url,
-        #     description="URL for the static website",
-        # )
-
-
         # DynamoDB table for storing file metadata
         metadata_table = dynamodb.Table(
             self,
@@ -145,7 +113,7 @@ class AwsEssentialsExamStack(Stack):
         )
 
         # SNS Topic for notifications
-        notification_topic = sns.Topic(self, "Received File Notification")
+        notification_topic = sns.Topic(self, "Received File")
 
         # Add an email subscription (update with the client's email)
         notification_topic.add_subscription(subscriptions.EmailSubscription(self.client_mail))
@@ -196,6 +164,10 @@ class AwsEssentialsExamStack(Stack):
         upload_files_bucket.grant_read_write(cleanup_function)
 
         # EventBridge rule to trigger the Lambda function every 30 minutes
+        """
+         The first invocation of the rule starts approximately when the rule is created 
+         or enabled. 
+        """
         event_rule = events.Rule(
             self,
             "CleanupRule",

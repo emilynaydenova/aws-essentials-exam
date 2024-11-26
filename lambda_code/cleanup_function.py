@@ -4,7 +4,7 @@ from datetime import datetime, timezone, timedelta
 
 def lambda_handler(event, context):
     s3 = boto3.client('s3')
-    bucket_name = os.environ['uploaded-by-client']
+    bucket_name = os.environ[ "BUCKET_NAME"]
     retention_period = timedelta(minutes=30)
 
     # List objects in the bucket
