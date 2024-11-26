@@ -4,7 +4,7 @@ from boto3.dynamodb.conditions import Key
 from urllib.parse import parse_qs
 
 dynamodb = boto3.resource("dynamodb")
-table_name = os.environ["MetadataTable"]
+table_name = os.environ["TABLE_NAME"]
 table = dynamodb.Table(table_name)
 
 

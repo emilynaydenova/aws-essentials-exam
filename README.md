@@ -11,3 +11,10 @@ This repository should include tests for the stack. Add meaningful logs wherever
 
 ### Solution
  ![Diagram](assets/images/ExamDiagram.jpg)
+
+
+Entry point for files upload:
+https://exam-static-website-bucket.s3.eu-central-1.amazonaws.com/index.html
+
+Entry endpoint for querying:
+ 
