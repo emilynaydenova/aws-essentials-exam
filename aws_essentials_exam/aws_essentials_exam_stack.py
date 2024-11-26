@@ -11,6 +11,7 @@ from aws_cdk import (
     aws_s3_notifications as s3_notifications,
     aws_apigateway as apigateway,
     aws_events_targets as targets,
+    aws_iam as iam,
     aws_events as events,
     aws_lambda as _lambda,
     RemovalPolicy, CfnOutput, Duration,
@@ -19,38 +20,118 @@ from constructs import Construct
 
 
 class AwsEssentialsExamStack(Stack):
-    client_mail = "hristo.zhelev@yahoo.com"
+    client_mail = "emilia_n2@yahoo.com"
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # S3 Bucket for static website hosting
-        upload_files_bucket = s3.Bucket(
+        # S3 bucket for static website hosting
+        static_site_bucket = s3.Bucket(
             self,
-            "UploadFilesBucket",  # here are stored uploaded by the client files
-            bucket_name='uploaded-by-client',
+            "StaticSiteBucket",
+            bucket_name="exam-static-website-bucket",
             website_index_document="index.html",
+            website_error_document="error.html",
             public_read_access=True,
             block_public_access=s3.BlockPublicAccess.BLOCK_ACLS,
             removal_policy=RemovalPolicy.DESTROY,
             auto_delete_objects=True,
         )
 
-        # Deploy HTML files to the S3 bucket
+        # Deploy the static website content
         s3_deployment.BucketDeployment(
             self,
-             "DeployWebsiteContent",
+            "DeployStaticSiteContent",
             sources=[s3_deployment.Source.asset("website")],  # Folder containing HTML files
-            destination_bucket=upload_files_bucket,
+            destination_bucket=static_site_bucket,
         )
 
-        # Output the website URL
+        # Output the static website URL
         CfnOutput(
             self,
-            "WebsiteURL",
-            value=upload_files_bucket.bucket_website_url,
+            "StaticSiteURL",
+            value=static_site_bucket.bucket_website_url,
             description="URL for the static website",
         )
+
+        # --------------
+        # S3 bucket for storing uploaded files
+        upload_files_bucket = s3.Bucket(
+            self,
+            "UploadFilesBucket",
+            bucket_name="uploaded-by-client",
+            versioned=True,  # Optional: Enables versioning for better file management
+            block_public_access=s3.BlockPublicAccess(
+                block_public_acls=False,
+                block_public_policy=False,
+                ignore_public_acls=False,
+                restrict_public_buckets=False,
+            ),
+            removal_policy=RemovalPolicy.DESTROY,  # Automatically delete the bucket during stack cleanup
+            auto_delete_objects=True,  # Deletes bucket objects automatically
+            encryption=s3.BucketEncryption.S3_MANAGED,  # Enables encryption
+        )
+
+        # Grant permissions for uploads (e.g., via a web app or Lambda)
+        upload_files_bucket.add_to_resource_policy(
+            iam.PolicyStatement(
+                actions=["s3:PutObject"],
+                resources=[upload_files_bucket.arn_for_objects("*")],
+                principals=[iam.AnyPrincipal()],  # Use specific IAM roles or users in production
+                conditions={
+                    # Optional: Restrict uploads to requests with specific headers (like Referer)
+                    # "StringEquals": {"aws:Referer": "your-site-url"}
+                },
+            )
+        )
+
+
+        # Output the S3 bucket name
+        CfnOutput(
+            self,
+            "UploadFilesBucketName",
+            value=upload_files_bucket.bucket_name,
+            description="S3 Bucket Name for Uploading Files",
+        )
+
+        # Output the S3 bucket ARN
+        CfnOutput(
+            self,
+            "UploadFilesBucketARN",
+            value=upload_files_bucket.bucket_arn,
+            description="S3 Bucket ARN for Uploading Files",
+        )
+
+
+        # ------------
+
+        # # S3 Bucket for static website hosting
+        # upload_files_bucket = s3.Bucket(
+        #     self,
+        #     "UploadFilesBucket",  # here are stored uploaded by the client files
+        #     bucket_name='uploaded-by-client',
+        #     website_index_document="index.html",
+        #     public_read_access=True,
+        #     block_public_access=s3.BlockPublicAccess.BLOCK_ACLS,
+        #     removal_policy=RemovalPolicy.DESTROY,
+        #     auto_delete_objects=True,
+        # )
+        #
+        # # Deploy HTML files to the S3 bucket
+        # s3_deployment.BucketDeployment(
+        #     self,
+        #      "DeployWebsiteContent",
+        #     sources=[s3_deployment.Source.asset("website")],  # Folder containing HTML files
+        #     destination_bucket=upload_files_bucket,
+        # )
+        #
+        # # Output the website URL
+        # CfnOutput(
+        #     self,
+        #     "WebsiteURL",
+        #     value=upload_files_bucket.bucket_website_url,
+        #     description="URL for the static website",
+        # )
 
 
         # DynamoDB table for storing file metadata
