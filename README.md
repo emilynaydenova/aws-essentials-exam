@@ -17,4 +17,5 @@ Entry point for files upload:
 https://exam-static-website-bucket.s3.eu-central-1.amazonaws.com/index.html
 
 Entry endpoint for querying:
+https://7flqb7u6md.execute-api.eu-central-1.amazonaws.com/prod/metadata?file_extension=jpg
  

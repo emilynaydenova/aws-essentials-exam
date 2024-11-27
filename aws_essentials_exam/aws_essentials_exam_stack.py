@@ -182,7 +182,7 @@ class AwsEssentialsExamStack(Stack):
             function_name="query-function",
             runtime=_lambda.Runtime.PYTHON_3_13,
             handler="query_function.lambda_handler",
-            code=_lambda.Code.from_asset("lambda_code"),  # Path to your Lambda code
+            code=_lambda.Code.from_asset("lambda_code"),  # Path to the Lambda code
             environment={
                 "TABLE_NAME": metadata_table.table_name,
             },
@@ -195,13 +195,46 @@ class AwsEssentialsExamStack(Stack):
         api = apigateway.RestApi(
             self,
             "FileMetadataApi",
-            rest_api_name="FileMetadata Service",
-            description="API for querying file metadata.",
+            rest_api_name="FileMetadataService",
+            description="API without authorization for querying file metadata.",
         )
 
-        # Define API Gateway endpoint
-        query_integration = apigateway.LambdaIntegration(query_function)
+        # deployment = apigateway.Deployment(
+        #     self, "Deployment",
+        #     api=api
+        # )
+        #
+        # #  Define the Stage
+        # dev_stage = apigateway.Stage(
+        #     self, "DevStage",
+        #     deployment=deployment,
+        #     stage_name="dev",
+        #     description="Development Stage",
+        #     logging_level=apigateway.MethodLoggingLevel.INFO,
+        #     data_trace_enabled=True,
+        #     metrics_enabled=True,
+        # )
+        #
+        # # Associate the Stage with the API
+        # api.deployment_stage = dev_stage
+
+
 
         # Add a resource and method for querying
         metadata_resource = api.root.add_resource("metadata")
-        metadata_resource.add_method("GET", query_integration)  # HTTP GET method
+        metadata_resource.add_method(
+            "GET",
+            apigateway.LambdaIntegration(
+                query_function,
+                integration_responses=[
+                    apigateway.IntegrationResponse(status_code="200")
+                ],
+                request_parameters={
+                    "integration.request.querystring.file_extension": "method.request.querystring.file_extension",
+                }
+            ),
+            request_parameters={
+                "method.request.querystring.file_extension": True,  # Required query parameter
+            },
+            authorization_type=apigateway.AuthorizationType.NONE
+        )

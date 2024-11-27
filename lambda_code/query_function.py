@@ -11,7 +11,7 @@ table = dynamodb.Table(table_name)
 def lambda_handler(event, context):
     # Parse query parameters
     query_params = event.get("queryStringParameters", {})
-    file_extension = query_params.get("file_extension")
+    file_extension = query_params.get("file_extension",None)
 
     if not file_extension:
         return {
