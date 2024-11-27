@@ -199,27 +199,6 @@ class AwsEssentialsExamStack(Stack):
             description="API without authorization for querying file metadata.",
         )
 
-        # deployment = apigateway.Deployment(
-        #     self, "Deployment",
-        #     api=api
-        # )
-        #
-        # #  Define the Stage
-        # dev_stage = apigateway.Stage(
-        #     self, "DevStage",
-        #     deployment=deployment,
-        #     stage_name="dev",
-        #     description="Development Stage",
-        #     logging_level=apigateway.MethodLoggingLevel.INFO,
-        #     data_trace_enabled=True,
-        #     metrics_enabled=True,
-        # )
-        #
-        # # Associate the Stage with the API
-        # api.deployment_stage = dev_stage
-
-
-
         # Add a resource and method for querying
         metadata_resource = api.root.add_resource("metadata")
         metadata_resource.add_method(
