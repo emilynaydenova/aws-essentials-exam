@@ -67,7 +67,8 @@ class AwsEssentialsExamStack(Stack):
                 ignore_public_acls=False,
                 restrict_public_buckets=False,
             ),
-            removal_policy=RemovalPolicy.DESTROY,  # Automatically delete the bucket during stack cleanup
+            # Automatically delete the bucket during stack cleanup
+            removal_policy=RemovalPolicy.DESTROY,
             auto_delete_objects=True,  # Deletes bucket objects automatically
             encryption=s3.BucketEncryption.S3_MANAGED,  # Enables encryption
         )
@@ -75,16 +76,16 @@ class AwsEssentialsExamStack(Stack):
         # Grant permissions for uploads (e.g., via a web app or Lambda)
         upload_files_bucket.add_to_resource_policy(
             iam.PolicyStatement(
-                actions=["s3:PutObject","s3:DeleteObject"],
+                actions=["s3:PutObject", "s3:DeleteObject"],
                 resources=[upload_files_bucket.arn_for_objects("*")],
-                principals=[iam.AnyPrincipal()],  # Use specific IAM roles or users in production
+                # Use specific IAM roles or users in production
+                principals=[iam.AnyPrincipal()],
                 conditions={
                     # Optional: Restrict uploads to requests with specific headers (like Referer)
                     # "StringEquals": {"aws:Referer": "your-site-url"}
                 },
             )
         )
-
 
         # Output the S3 bucket name
         CfnOutput(

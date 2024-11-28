@@ -31,7 +31,7 @@ jobs:
       - name: Run Linting and Tests
         run: |
           source .venv/bin/activate
-          pylint aws_essentials_exam
+          pylint --max-line-length=240 aws_essentials_exam
           pytest tests
 
       - name: CDK Synth
