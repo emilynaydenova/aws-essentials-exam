@@ -37,6 +37,8 @@ jobs:
       - name: CDK Synth
         run: |
           source .venv/bin/activate
+          npm install -g aws-cdk # Install CDK globally
+          export PATH=$(npm bin -g):$PATH
           cdk synth
 
   deploy:
@@ -56,6 +58,7 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           pip install -r requirements.txt
+          npm install -g aws-cdk # Install CDK globally
 
       - name: Deploy to AWS
         env:
@@ -64,4 +67,5 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
           source .venv/bin/activate
+          export PATH=$(npm bin -g):$PATH
           cdk deploy --require-approval never
