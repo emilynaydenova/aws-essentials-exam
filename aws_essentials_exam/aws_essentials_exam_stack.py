@@ -1,3 +1,6 @@
+"""
+This module defines the AWS Essentials Exam Stack.
+"""
 import os
 
 from aws_cdk import (
@@ -20,6 +23,10 @@ from constructs import Construct
 
 
 class AwsEssentialsExamStack(Stack):
+    """
+    This class is responsible for AWS Stack functionality.
+    """
+
     client_mail = "emilia_n2@yahoo.com"
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
@@ -165,10 +172,9 @@ class AwsEssentialsExamStack(Stack):
         upload_files_bucket.grant_read_write(cleanup_function)
 
         # EventBridge rule to trigger the Lambda function every 30 minutes
-        """
-         The first invocation of the rule starts approximately when the rule is created 
-         or enabled. 
-        """
+        # The first invocation of the rule starts approximately when the rule is created
+        # or enabled.
+
         event_rule = events.Rule(
             self,
             "CleanupRule",
