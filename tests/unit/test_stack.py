@@ -11,7 +11,7 @@ from aws_essentials_exam.aws_essentials_exam_stack import AwsEssentialsExamStack
 
 from aws_essentials_exam.aws_essentials_exam_stack import AwsEssentialsExamStack
 
-
+# pylint: disable=too-many-locals
 def test_stack_resources_count():
     # Initialize the app and stack
     app = App()
