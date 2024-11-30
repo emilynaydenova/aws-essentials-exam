@@ -228,4 +228,3 @@ class AwsEssentialsExamStack(Stack):
             },
             authorization_type=apigateway.AuthorizationType.NONE
         )
-        
