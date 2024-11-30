@@ -28,9 +28,13 @@ class AwsEssentialsExamStack(Stack):
     """
 
     client_mail = "emilia_n2@yahoo.com"
+    # Set default path if not provided
 
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+
+    def __init__(self, scope: Construct, construct_id: str,*,asset_path=None,lambda_path=None,**kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
+        self.asset_path = asset_path or os.path.abspath("website")
+        self.lambda_path = lambda_path or os.path.abspath("lambda_code")
 
         # S3 bucket for static website hosting
         static_site_bucket = s3.Bucket(
@@ -49,7 +53,7 @@ class AwsEssentialsExamStack(Stack):
         s3_deployment.BucketDeployment(
             self,
             "DeployStaticSiteContent",
-            sources=[s3_deployment.Source.asset("website")],  # Folder containing HTML files
+            sources=[s3_deployment.Source.asset(self.asset_path)],  # Folder containing HTML files
             destination_bucket=static_site_bucket,
         )
 
@@ -133,7 +137,7 @@ class AwsEssentialsExamStack(Stack):
             function_name='processing-function',
             runtime=_lambda.Runtime.PYTHON_3_13,
             handler='processing_function.lambda_handler',
-            code=_lambda.Code.from_asset(os.path.join("lambda_code")),  # Code location
+            code=_lambda.Code.from_asset(self.lambda_path),  # Code location
             memory_size=512,  # Memory size in MB (optional)
             timeout=Duration.seconds(10),  # Timeout in seconds (optional)
             architecture=_lambda.Architecture.ARM_64,
@@ -162,7 +166,7 @@ class AwsEssentialsExamStack(Stack):
             function_name='cleanup-function',
             runtime=_lambda.Runtime.PYTHON_3_13,
             handler="cleanup_function.lambda_handler",
-            code=_lambda.Code.from_asset(os.path.join("lambda_code")),
+            code=_lambda.Code.from_asset(self.lambda_path),
             environment={
                 "BUCKET_NAME": upload_files_bucket.bucket_name,
             },
@@ -189,7 +193,7 @@ class AwsEssentialsExamStack(Stack):
             function_name="query-function",
             runtime=_lambda.Runtime.PYTHON_3_13,
             handler="query_function.lambda_handler",
-            code=_lambda.Code.from_asset("lambda_code"),  # Path to the Lambda code
+            code=_lambda.Code.from_asset(self.lambda_path),  # Path to the Lambda code
             environment={
                 "TABLE_NAME": metadata_table.table_name,
             },
