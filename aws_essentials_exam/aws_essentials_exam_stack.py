@@ -31,7 +31,7 @@ class AwsEssentialsExamStack(Stack):
     # Set default path if not provided
 
 
-    def __init__(self, scope: Construct, construct_id: str,*,asset_path=None,lambda_path=None,**kwargs) -> None:
+    def __init__(self, scope: Construct, construct_id: str,asset_path=None,lambda_path=None,**kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
         self.asset_path = asset_path or os.path.abspath("website")
         self.lambda_path = lambda_path or os.path.abspath("lambda_code")
