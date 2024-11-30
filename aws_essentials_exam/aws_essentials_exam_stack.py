@@ -22,7 +22,7 @@ from aws_cdk import (
 from constructs import Construct
 
 
-class AwsEssentialsExamStack(Stack):
+class AwsEssentialsExamStack(Stack): # pylint: disable=too-many-locals
     """
     This class is responsible for AWS Stack functionality.
     """
