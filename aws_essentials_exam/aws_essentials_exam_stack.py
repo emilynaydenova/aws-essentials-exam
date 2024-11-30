@@ -22,7 +22,7 @@ from aws_cdk import (
 from constructs import Construct
 
 
-class AwsEssentialsExamStack(Stack): # pylint: disable=too-many-locals
+class AwsEssentialsExamStack(Stack):
     """
     This class is responsible for AWS Stack functionality.
     """
@@ -228,3 +228,4 @@ class AwsEssentialsExamStack(Stack): # pylint: disable=too-many-locals
             },
             authorization_type=apigateway.AuthorizationType.NONE
         )
+        
